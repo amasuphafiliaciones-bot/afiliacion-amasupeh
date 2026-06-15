@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Solicitud de Afiliación — AMASUPeH</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#f0f4f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:12px;}
+.shell{max-width:480px;margin:0 auto;}
+
+.app-header{background:#1a6fa8;border-radius:16px;padding:20px 16px 16px;margin-bottom:12px;position:relative;overflow:hidden;}
+.app-header::after{content:'';position:absolute;right:-20px;top:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.06);}
+.logo-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.logo-texts .org{font-size:15px;font-weight:600;color:#fff;}
+.logo-texts .sub{font-size:10px;color:rgba(255,255,255,0.75);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
+.header-bottom{display:flex;align-items:center;justify-content:space-between;}
+.header-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.18);border-radius:20px;padding:5px 12px;font-size:12px;color:#fff;}
+.badge-date{font-size:11px;color:rgba(255,255,255,0.8);}
+.gold-bar{height:3px;background:#E8B923;border-radius:2px;margin-top:14px;}
+
+.progress-wrap{background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+.progress-labels{display:flex;justify-content:space-between;margin-bottom:8px;}
+.progress-label{font-size:10px;color:#888;text-align:center;flex:1;transition:color .3s;}
+.progress-label.active{color:#1a6fa8;font-weight:600;}
+.progress-label.done{color:#27ae60;}
+.progress-bar-track{height:4px;background:#e8edf2;border-radius:2px;position:relative;margin-bottom:6px;}
+.progress-bar-fill{height:4px;background:#1a6fa8;border-radius:2px;transition:width .4s ease;position:absolute;top:0;left:0;}
+.progress-dots{display:flex;justify-content:space-between;}
+.pdot{width:10px;height:10px;border-radius:50%;background:#e8edf2;border:1.5px solid #d0d8e0;transition:all .3s;}
+.pdot.active{background:#1a6fa8;border-color:#1a6fa8;}
+.pdot.done{background:#27ae60;border-color:#27ae60;}
+
+.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+.card-title{font-size:13px;font-weight:600;color:#1a6fa8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.card-title i{font-size:16px;}
+
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12px;font-weight:600;color:#555;margin-bottom:5px;}
+.field input,.field select{width:100%;font-size:16px;padding:13px 14px;border:1.5px solid #e0e6ed;border-radius:10px;background:#fff;color:#2c3e50;-webkit-appearance:none;appearance:none;transition:border-color .2s,box-shadow .2s;}
+.field input:focus,.field select:focus{outline:none;border-color:#1a6fa8;box-shadow:0 0 0 3px rgba(26,111,168,0.12);}
+.field.invalid input,.field.invalid select{border-color:#e74c3c;background:#fff8f8;}
+.field .err{font-size:11px;color:#e74c3c;margin-top:4px;display:none;}
+.field.invalid .err{display:block;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+.fam-card{background:#f8fafc;border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid #e8edf2;position:relative;}
+.fam-num{font-size:11px;font-weight:600;color:#1a6fa8;margin-bottom:12px;}
+.fam-del{position:absolute;top:10px;right:10px;background:#fff;border:1px solid #e0e6ed;border-radius:8px;padding:5px 10px;font-size:12px;color:#888;cursor:pointer;display:flex;align-items:center;gap:4px;}
+.fam-del:active{border-color:#e74c3c;color:#e74c3c;}
+
+.auth-card{background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:14px;border:1px solid #e8edf2;}
+.auth-title{font-size:12px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+.auth-text{font-size:14px;color:#2c3e50;line-height:1.65;margin-bottom:14px;}
+.check-row{display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;padding:13px;border:1.5px solid #e0e6ed;cursor:pointer;transition:border-color .2s,background .2s;}
+.check-row.checked{border-color:#27ae60;background:#f0faf4;}
+.check-box{width:24px;height:24px;border-radius:6px;border:2px solid #d0d8e0;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;background:#fff;}
+.check-box.checked{background:#27ae60;border-color:#27ae60;}
+.check-box i{font-size:15px;color:#fff;display:none;}
+.check-box.checked i{display:block;}
+.check-label{font-size:14px;color:#2c3e50;line-height:1.4;font-weight:500;}
+.check-err{font-size:12px;color:#e74c3c;margin-top:8px;display:none;padding-left:4px;}
+
+.confirm-section{margin-bottom:16px;}
+.cs-title{font-size:11px;font-weight:600;color:#1a6fa8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
+.crow{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid #f0f4f8;}
+.crow:last-child{border-bottom:none;}
+.clabel{font-size:12px;color:#888;flex-shrink:0;margin-right:8px;}
+.cval{font-size:13px;font-weight:600;color:#2c3e50;text-align:right;}
+
+.nav-row{display:flex;gap:10px;margin-top:4px;}
+.btn-back{flex:0 0 auto;background:#fff;border:1.5px solid #e0e6ed;border-radius:12px;padding:14px 18px;font-size:15px;color:#555;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.btn-back:active{background:#f5f7fa;}
+.btn-next{flex:1;background:#1a6fa8;color:#fff;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-height:52px;}
+.btn-next:active{opacity:.88;}
+.btn-add{touch-action:manipulation;}
+.btn-back{touch-action:manipulation;}
+.btn-pdf{touch-action:manipulation;}
+.btn-reset{touch-action:manipulation;}
+.check-row{touch-action:manipulation;}
+.btn-add{width:100%;background:#fff;border:1.5px dashed #b0c4d8;border-radius:12px;padding:13px;font-size:14px;color:#1a6fa8;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-add:active{background:#f0f6fb;}
+.btn-pdf{width:100%;background:#E8B923;color:#2C3E50;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;-webkit-tap-highlight-color:transparent;}
+.btn-pdf:active{opacity:.88;}
+.btn-reset{width:100%;background:#fff;border:1.5px solid #e0e6ed;border-radius:12px;padding:13px;font-size:14px;color:#555;cursor:pointer;}
+.btn-confirm{background:#27ae60;}
+
+.success-wrap{text-align:center;padding:20px 0 8px;}
+.success-icon{width:76px;height:76px;border-radius:50%;background:#27ae60;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.success-icon i{font-size:38px;color:#fff;}
+.success-title{font-size:21px;font-weight:600;color:#2c3e50;margin-bottom:6px;}
+.success-sub{font-size:14px;color:#666;line-height:1.6;margin-bottom:4px;}
+.nro-badge{display:inline-block;background:#f0f4f8;border:1px solid #e0e6ed;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:600;color:#2c3e50;margin:10px 0 20px;}
+
+.step{display:none;}
+.step.active{display:block;}
+.req-note{font-size:11px;color:#888;margin-bottom:14px;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="app-header">
+    <div class="logo-row">
+      <svg width="46" height="40" viewBox="0 0 220 195" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+        <polygon points="10,185 70,55 110,140" fill="rgba(255,255,255,0.92)"/>
+        <polygon points="70,55 110,140 150,55" fill="rgba(255,255,255,0.45)"/>
+        <polygon points="110,140 150,55 210,185" fill="rgba(91,188,204,0.9)"/>
+      </svg>
+      <div class="logo-texts">
+        <div class="org">Asociación MASUPeH</div>
+        <div class="sub">Mutual Afiliados SUPeH Plaza Huincul</div>
+      </div>
+    </div>
+    <div class="header-bottom">
+      <div class="header-pill"><i class="ti ti-file-description"></i> Solicitud de afiliación</div>
+      <div class="badge-date" id="fecha-display"></div>
+    </div>
+    <div class="gold-bar"></div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-labels">
+      <div class="progress-label active" id="lbl0">Datos</div>
+      <div class="progress-label" id="lbl1">Familia</div>
+      <div class="progress-label" id="lbl2">Confirmar</div>
+      <div class="progress-label" id="lbl3">Listo</div>
+    </div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="prog-fill" style="width:0%"></div>
+    </div>
+    <div class="progress-dots">
+      <div class="pdot active" id="dot0"></div>
+      <div class="pdot" id="dot1"></div>
+      <div class="pdot" id="dot2"></div>
+      <div class="pdot" id="dot3"></div>
+    </div>
+  </div>
+
+  <!-- PASO 1 -->
+  <div class="step active" id="step0">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-user"></i> Datos personales</div>
+      <p class="req-note">* campos obligatorios</p>
+      <div class="row2">
+        <div class="field" id="f-apellido"><label>Apellido *</label><input type="text" id="apellido" placeholder="García" autocomplete="family-name"><span class="err">Requerido</span></div>
+        <div class="field" id="f-nombre"><label>Nombre/s *</label><input type="text" id="nombre" placeholder="Juan" autocomplete="given-name"><span class="err">Requerido</span></div>
+      </div>
+      <div class="row2">
+        <div class="field" id="f-nacimiento"><label>Fecha de nac. *</label><input type="date" id="nacimiento"><span class="err">Requerido</span></div>
+        <div class="field" id="f-lugar"><label>Lugar de nac. *</label><input type="text" id="lugar" placeholder="Ciudad"><span class="err">Requerido</span></div>
+      </div>
+      <div class="row2">
+        <div class="field" id="f-dni"><label>DNI *</label><input type="text" id="dni" inputmode="numeric" placeholder="00.000.000"><span class="err">Requerido</span></div>
+        <div class="field" id="f-cuit"><label>CUIT *</label><input type="text" id="cuit" inputmode="numeric" placeholder="20-00000000-0"><span class="err">Requerido</span></div>
+      </div>
+      <div class="row2">
+        <div class="field" id="f-civil"><label>Estado civil *</label>
+          <select id="civil"><option value="">Seleccioná...</option><option>Soltero/a</option><option>Casado/a</option><option>Divorciado/a</option><option>Viudo/a</option><option>Unión convivencial</option></select>
+          <span class="err">Requerido</span></div>
+        <div class="field" id="f-tel"><label>Teléfono *</label><input type="tel" id="tel" inputmode="tel" placeholder="299-000000" autocomplete="tel"><span class="err">Requerido</span></div>
+      </div>
+      <div class="field" id="f-email"><label>E-mail *</label><input type="email" id="email" inputmode="email" placeholder="correo@ejemplo.com" autocomplete="email"><span class="err">E-mail inválido</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-home"></i> Domicilio</div>
+      <div class="field" id="f-domicilio"><label>Calle y número *</label><input type="text" id="domicilio" placeholder="Ej: San Martín 450" autocomplete="street-address"><span class="err">Requerido</span></div>
+      <div class="row2">
+        <div class="field" id="f-localidad"><label>Localidad *</label><input type="text" id="localidad" placeholder="Plaza Huincul"><span class="err">Requerido</span></div>
+        <div class="field" id="f-cp"><label>Cód. postal</label><input type="text" id="cp" inputmode="numeric" placeholder="8318"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i class="ti ti-building-factory-2"></i> Datos laborales</div>
+      <div class="field" id="f-empresa"><label>Empresa *</label><input type="text" id="empresa" placeholder="Nombre de la empresa"><span class="err">Requerido</span></div>
+      <div class="row2">
+        <div class="field" id="f-legajo"><label>Legajo *</label><input type="text" id="legajo" inputmode="numeric" placeholder="N° de legajo"><span class="err">Requerido</span></div>
+        <div class="field" id="f-trabajo"><label>Lugar de trabajo *</label><input type="text" id="trabajo" placeholder="Ej: NOC"><span class="err">Requerido</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <button class="btn-next" onclick="goStep1()">Siguiente <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- PASO 2 -->
+  <div class="step" id="step1">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-users"></i> Grupo familiar</div>
+      <p style="font-size:13px;color:#666;margin-bottom:14px;">Opcional. Agregá los integrantes de tu grupo familiar.</p>
+      <div id="familiar-list"></div>
+      <button class="btn-add" onclick="addFamiliar()"><i class="ti ti-plus"></i> Agregar integrante</button>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="setStep(0)"><i class="ti ti-arrow-left"></i></button>
+      <button class="btn-next" onclick="goStep2()">Siguiente <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- PASO 3 -->
+  <div class="step" id="step2">
+    <div class="card">
+      <div class="card-title"><i class="ti ti-eye"></i> Revisá tus datos</div>
+      <div class="confirm-section">
+        <div class="cs-title">Datos personales</div>
+        <div id="cp-personal"></div>
+      </div>
+      <div class="confirm-section" id="cp-fam-wrap" style="display:none;">
+        <div class="cs-title">Grupo familiar</div>
+        <div id="cp-familiar"></div>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-title">Autorización de descuento</div>
+      <div class="auth-text">Por la presente autorizo que se me descuente de mis haberes el <strong>1,5%</strong> correspondiente a la cuota societaria de <strong>AMASUPeH</strong>, conforme a la normativa vigente.</div>
+      <div class="check-row" id="check-row" onclick="toggleCheck()">
+        <div class="check-box" id="check-box"><i class="ti ti-check"></i></div>
+        <div class="check-label">Acepto y autorizo el descuento</div>
+      </div>
+      <div class="check-err" id="check-err">Debés aceptar la autorización para continuar</div>
+    </div>
+
+    <div class="card">
+      <div class="field" id="f-confirm-email">
+        <label>Confirmá tu e-mail *</label>
+        <input type="email" id="confirm-email" inputmode="email" placeholder="Ingresá nuevamente tu e-mail">
+        <span class="err" id="email-match-err">El e-mail no coincide</span>
+      </div>
+      <div class="nav-row">
+        <button class="btn-back" onclick="setStep(1)"><i class="ti ti-arrow-left"></i></button>
+        <button class="btn-next btn-confirm" onclick="goStep3()"><i class="ti ti-send"></i> Confirmar y enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASO 4 -->
+  <div class="step" id="step3">
+    <div class="card">
+      <!-- Enviando -->
+      <div id="enviando-msg" style="display:none;flex-direction:column;align-items:center;padding:30px 0;gap:14px;">
+        <div style="width:52px;height:52px;border:4px solid #e0e6ed;border-top-color:#1a6fa8;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+        <div style="font-size:15px;font-weight:600;color:#2c3e50;">Enviando solicitud...</div>
+        <div style="font-size:13px;color:#888;">Generando y enviando el PDF a AMASUPeH</div>
+      </div>
+      <!-- Éxito -->
+      <div id="exito-msg" style="display:none;">
+        <div class="success-wrap">
+          <div class="success-icon"><i class="ti ti-check"></i></div>
+          <div class="success-title">Solicitud enviada</div>
+          <div class="success-sub">Fecha de afiliacion:<br><strong id="fecha-afil"></strong></div>
+          <div class="nro-badge" id="nro-solicitud"></div>
+          <div style="background:#f0f6fb;border-radius:10px;padding:12px 14px;font-size:13px;color:#555;margin-bottom:16px;">
+            El PDF fue enviado a <strong>amasuphafiliaciones@gmail.com</strong> y tambien se descargo en tu dispositivo.
+          </div>
+        </div>
+        <button class="btn-reset" onclick="resetForm()"><i class="ti ti-refresh"></i> Nueva solicitud</button>
+      </div>
+      <style>@keyframes spin{to{transform:rotate(360deg);}}</style>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const today=new Date();
+const dateStr=today.toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
+document.getElementById('fecha-display').textContent=dateStr;
+document.getElementById('fecha-afil').textContent=dateStr;
+let famRowCount=0,authChecked=false;
+const progW=['0%','33%','66%','100%'];
+
+function setStep(n){
+  document.querySelectorAll('.step').forEach((s,i)=>s.classList.toggle('active',i===n));
+  ['dot0','dot1','dot2','dot3'].forEach((id,i)=>{
+    const d=document.getElementById(id);
+    d.classList.remove('active','done');
+    if(i===n)d.classList.add('active');else if(i<n)d.classList.add('done');
+  });
+  ['lbl0','lbl1','lbl2','lbl3'].forEach((id,i)=>{
+    const l=document.getElementById(id);
+    l.classList.remove('active','done');
+    if(i===n)l.classList.add('active');else if(i<n)l.classList.add('done');
+  });
+  document.getElementById('prog-fill').style.width=progW[n];
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function validate(fields){
+  let ok=true;
+  fields.forEach(([id,type])=>{
+    const el=document.getElementById(id);
+    const fw=document.getElementById('f-'+id);
+    if(!fw||!el)return;
+    const valid=type==='email'?/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()):el.value.trim()!=='';
+    fw.classList.toggle('invalid',!valid);
+    if(!valid)ok=false;
+  });
+  return ok;
+}
+
+function goStep1(){
+  const ok=validate([['apellido','t'],['nombre','t'],['nacimiento','t'],['lugar','t'],['dni','t'],['cuit','t'],['civil','t'],['tel','t'],['email','email'],['domicilio','t'],['localidad','t'],['empresa','t'],['legajo','t'],['trabajo','t']]);
+  if(ok)setStep(1);
+  else{const f=document.querySelector('.field.invalid input,.field.invalid select');if(f)f.scrollIntoView({behavior:'smooth',block:'center'});}
+}
+
+function addFamiliar(){
+  const idx=famRowCount++;
+  const div=document.createElement('div');
+  div.className='fam-card';div.id='fam-card-'+idx;
+  div.innerHTML=`<div class="fam-num">Integrante ${idx+1}</div>
+    <button class="fam-del" onclick="removeFamiliar(${idx})"><i class="ti ti-x"></i> Quitar</button>
+    <div class="row2">
+      <div class="field"><label>Apellido</label><input type="text" id="fap-${idx}" placeholder="Apellido"></div>
+      <div class="field"><label>Nombre/s</label><input type="text" id="fnm-${idx}" placeholder="Nombre/s"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Parentesco</label><input type="text" id="fpr-${idx}" placeholder="Ej: Hijo/a"></div>
+      <div class="field"><label>CUIL</label><input type="text" id="fcl-${idx}" inputmode="numeric" placeholder="00-00000000-0"></div>
+    </div>
+    <div class="field"><label>Fecha de nacimiento</label><input type="date" id="ffn-${idx}"></div>`;
+  document.getElementById('familiar-list').appendChild(div);
+}
+
+function removeFamiliar(idx){const c=document.getElementById('fam-card-'+idx);if(c)c.remove();}
+
+function getFamiliares(){
+  const res=[];
+  document.querySelectorAll('.fam-card').forEach(card=>{
+    const id=card.id.replace('fam-card-','');
+    const ap=(document.getElementById('fap-'+id)||{}).value||'';
+    const nm=(document.getElementById('fnm-'+id)||{}).value||'';
+    if(ap||nm)res.push({
+      apellido:ap.trim(),nombre:nm.trim(),
+      parentesco:(document.getElementById('fpr-'+id)||{}).value||'',
+      cuil:(document.getElementById('fcl-'+id)||{}).value||'',
+      fnac:(document.getElementById('ffn-'+id)||{}).value||''
+    });
+  });
+  return res;
+}
+
+function toggleCheck(){
+  authChecked=!authChecked;
+  document.getElementById('check-box').classList.toggle('checked',authChecked);
+  document.getElementById('check-row').classList.toggle('checked',authChecked);
+  if(authChecked)document.getElementById('check-err').style.display='none';
+}
+
+function goStep2(){buildConfirm();setStep(2);document.getElementById('confirm-email').value='';authChecked=false;document.getElementById('check-box').classList.remove('checked');document.getElementById('check-row').classList.remove('checked');document.getElementById('check-err').style.display='none';}
+
+function buildConfirm(){
+  const g=id=>document.getElementById(id).value||'--';
+  const cp=g('cp');
+  const rows=[['Apellido',g('apellido')],['Nombre/s',g('nombre')],['Fecha de nac.',g('nacimiento')],['Lugar de nac.',g('lugar')],['DNI',g('dni')],['CUIT',g('cuit')],['Estado civil',g('civil')],['Teléfono',g('tel')],['E-mail',g('email')],['Domicilio',g('domicilio')],['Localidad',g('localidad')+(cp&&cp!='--'?' (CP: '+cp+')':'')],['Empresa',g('empresa')],['Legajo',g('legajo')],['Lugar de trabajo',g('trabajo')],['Fecha de afiliación',dateStr]];
+  document.getElementById('cp-personal').innerHTML=rows.map(([l,v])=>`<div class="crow"><span class="clabel">${l}</span><span class="cval">${v}</span></div>`).join('');
+  const fams=getFamiliares();
+  const fw=document.getElementById('cp-fam-wrap');
+  if(fams.length){
+    document.getElementById('cp-familiar').innerHTML=fams.map(f=>`<div class="crow" style="flex-direction:column;align-items:flex-start;gap:3px;"><span style="font-size:13px;font-weight:600;color:#2c3e50;">${f.apellido}, ${f.nombre}</span><span style="font-size:12px;color:#888;">${f.parentesco||'--'} | CUIL: ${f.cuil||'--'} | Nac.: ${f.fnac||'--'}</span></div>`).join('');
+    fw.style.display='block';
+  }else fw.style.display='none';
+}
+
+function goStep3(){
+  const eO=document.getElementById('email').value.trim();
+  const eC=document.getElementById('confirm-email').value.trim();
+  const fw=document.getElementById('f-confirm-email');
+  let ok=true;
+  if(!eC||eC!==eO){fw.classList.add('invalid');document.getElementById('email-match-err').style.display='block';ok=false;}
+  else{fw.classList.remove('invalid');document.getElementById('email-match-err').style.display='none';}
+  if(!authChecked){document.getElementById('check-err').style.display='block';ok=false;}
+  if(!ok)return;
+  const nro='AMH-'+today.getFullYear()+'-'+String(Math.floor(Math.random()*90000)+10000);
+  document.getElementById('nro-solicitud').textContent='N de solicitud: '+nro;
+
+  // Mostrar pantalla de envío
+  setStep(3);
+  document.getElementById('enviando-msg').style.display='flex';
+  document.getElementById('exito-msg').style.display='none';
+
+  // Generar PDF y enviar
+  enviarPDF(nro);
+}
+
+function enviarPDF(nro){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const W=doc.internal.pageSize.getWidth();let y=0;
+  doc.setFillColor(26,111,168);doc.rect(0,0,W,30,'F');
+  doc.setFillColor(232,185,35);doc.rect(0,30,W,2.5,'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(15);doc.setFont('helvetica','bold');doc.text('ASOCIACION MASUPeH',W/2,12,{align:'center'});
+  doc.setFontSize(8);doc.setFont('helvetica','normal');doc.text('MUTUAL AFILIADOS SUPEH PLAZA HUINCUL',W/2,19,{align:'center'});
+  doc.setFontSize(9);doc.setFont('helvetica','bold');doc.text('SOLICITUD DE AFILIACION',W/2,26,{align:'center'});
+  y=42;
+  doc.setTextColor(44,62,80);doc.setFontSize(8.5);doc.setFont('helvetica','bold');
+  doc.text('N de solicitud: '+nro,14,y);doc.text('Fecha: '+dateStr,W-14,y,{align:'right'});y+=10;
+  function sec(t){if(y>262){doc.addPage();y=18;}doc.setFillColor(232,242,250);doc.rect(10,y-4,W-20,7,'F');doc.setFillColor(26,111,168);doc.rect(10,y-4,3,7,'F');doc.setTextColor(26,111,168);doc.setFontSize(8.5);doc.setFont('helvetica','bold');doc.text(t.toUpperCase(),16,y+1);y+=9;}
+  function fil(l,v){if(y>272){doc.addPage();y=18;}doc.setTextColor(120,130,140);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.text(l,14,y);doc.setTextColor(44,62,80);doc.setFont('helvetica','bold');doc.setFontSize(8.5);const lines=doc.splitTextToSize(String(v||'--'),W-90);doc.text(lines,78,y);y+=Math.max(6,lines.length*5);doc.setDrawColor(225,230,235);doc.line(14,y-1,W-14,y-1);}
+  const g=id=>document.getElementById(id).value||'--';
+  sec('Datos del titular');
+  fil('Apellido',g('apellido'));fil('Nombre/s',g('nombre'));fil('Fecha de nac.',g('nacimiento'));fil('Lugar de nac.',g('lugar'));fil('DNI',g('dni'));fil('CUIT',g('cuit'));fil('Estado civil',g('civil'));fil('Telefono',g('tel'));fil('E-mail',g('email'));y+=2;
+  sec('Domicilio');fil('Domicilio',g('domicilio'));fil('Localidad',g('localidad')+(document.getElementById('cp').value?' - CP: '+document.getElementById('cp').value:''));y+=2;
+  sec('Datos laborales');fil('Empresa',g('empresa'));fil('Legajo',g('legajo'));fil('Lugar de trabajo',g('trabajo'));y+=2;
+  const fams=getFamiliares();
+  if(fams.length){sec('Grupo familiar');fams.forEach(f=>{if(y>265){doc.addPage();y=18;}doc.setTextColor(44,62,80);doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.text(f.apellido+', '+f.nombre,14,y);doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(100,110,120);doc.text('Parentesco: '+(f.parentesco||'--')+'   CUIL: '+(f.cuil||'--')+'   Nac.: '+(f.fnac||'--'),14,y+5);y+=11;doc.setDrawColor(225,230,235);doc.line(14,y-1,W-14,y-1);});y+=2;}
+  if(y>248){doc.addPage();y=18;}
+  doc.setFillColor(240,249,244);doc.rect(10,y,W-20,26,'F');doc.setDrawColor(39,174,96);doc.rect(10,y,W-20,26,'S');doc.setFillColor(39,174,96);doc.rect(10,y,3,26,'F');
+  doc.setTextColor(39,174,96);doc.setFontSize(9);doc.setFont('helvetica','bold');doc.text('AUTORIZACION ACEPTADA',16,y+8);
+  doc.setTextColor(44,62,80);doc.setFont('helvetica','normal');doc.setFontSize(8);
+  const al=doc.splitTextToSize('El/la afiliado/a autoriza el descuento del 1,5% de sus haberes en concepto de cuota societaria de AMASUPeH, conforme a la normativa vigente.',W-28);
+  doc.text(al,14,y+16);y+=32;
+  if(y>258){doc.addPage();y=18;}y+=4;
+  doc.setDrawColor(44,62,80);doc.setLineWidth(0.3);doc.line(14,y,85,y);doc.line(W-85,y,W-14,y);
+  doc.setFontSize(7.5);doc.setTextColor(100,110,120);doc.setFont('helvetica','normal');
+  doc.text('Firma y aclaracion del afiliado/a',14,y+5);doc.text('Firma y aclaracion AMASUPeH',W-85,y+5);
+  doc.setFillColor(26,111,168);doc.rect(0,285,W,12,'F');doc.setFillColor(232,185,35);doc.rect(0,285,W,1.5,'F');
+  doc.setTextColor(255,255,255);doc.setFontSize(7);
+  doc.text('AMASUPeH - Asociacion Mutual de Afiliados SUPeH Plaza Huincul | Plaza Huincul, Neuquen',W/2,292,{align:'center'});
+
+  // Convertir a base64 y enviar
+  const pdfBase64 = doc.output('datauristring').split(',')[1];
+  const apellido = document.getElementById('apellido').value||'afiliado';
+
+  fetch('https://script.google.com/macros/s/AKfycbyAj-hECJYByQnh1KsFrTIFxgr35KN71v92wOOOqfJi5S9OuFbJez21TJ3C0hD_tKXtBg/exec', {
+    method: 'POST',
+    mode: 'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      pdf: pdfBase64,
+      apellido: apellido,
+      nombreTitular: document.getElementById('nombre').value||'',
+      dni: document.getElementById('dni').value||'',
+      cuit: document.getElementById('cuit').value||'',
+      email: document.getElementById('email').value||'',
+      tel: document.getElementById('tel').value||'',
+      empresa: document.getElementById('empresa').value||'',
+      trabajo: document.getElementById('trabajo').value||'',
+      fecha: dateStr,
+      nro: nro
+    })
+  })
+  .then(()=>{
+    document.getElementById('enviando-msg').style.display='none';
+    document.getElementById('exito-msg').style.display='block';
+    // También guardar PDF local
+    doc.save('Afiliacion_AMASUPeH_'+apellido.replace(/[^a-zA-Z0-9]/g,'_')+'.pdf');
+  })
+  .catch(()=>{
+    document.getElementById('enviando-msg').style.display='none';
+    document.getElementById('exito-msg').style.display='block';
+    doc.save('Afiliacion_AMASUPeH_'+apellido.replace(/[^a-zA-Z0-9]/g,'_')+'.pdf');
+  });
+}
+
+function generarPDF(){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const W=doc.internal.pageSize.getWidth();let y=0;
+  doc.setFillColor(26,111,168);doc.rect(0,0,W,30,'F');
+  doc.setFillColor(232,185,35);doc.rect(0,30,W,2.5,'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(15);doc.setFont('helvetica','bold');doc.text('ASOCIACION MASUPeH',W/2,12,{align:'center'});
+  doc.setFontSize(8);doc.setFont('helvetica','normal');doc.text('MUTUAL AFILIADOS SUPEH PLAZA HUINCUL',W/2,19,{align:'center'});
+  doc.setFontSize(9);doc.setFont('helvetica','bold');doc.text('SOLICITUD DE AFILIACION',W/2,26,{align:'center'});
+  y=42;
+  const nroTxt=document.getElementById('nro-solicitud').textContent;
+  doc.setTextColor(44,62,80);doc.setFontSize(8.5);doc.setFont('helvetica','bold');
+  doc.text(nroTxt,14,y);doc.text('Fecha: '+dateStr,W-14,y,{align:'right'});y+=10;
+  function sec(t){if(y>262){doc.addPage();y=18;}doc.setFillColor(232,242,250);doc.rect(10,y-4,W-20,7,'F');doc.setFillColor(26,111,168);doc.rect(10,y-4,3,7,'F');doc.setTextColor(26,111,168);doc.setFontSize(8.5);doc.setFont('helvetica','bold');doc.text(t.toUpperCase(),16,y+1);y+=9;}
+  function fil(l,v){if(y>272){doc.addPage();y=18;}doc.setTextColor(120,130,140);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.text(l,14,y);doc.setTextColor(44,62,80);doc.setFont('helvetica','bold');doc.setFontSize(8.5);const lines=doc.splitTextToSize(String(v||'--'),W-90);doc.text(lines,78,y);y+=Math.max(6,lines.length*5);doc.setDrawColor(225,230,235);doc.line(14,y-1,W-14,y-1);}
+  const g=id=>document.getElementById(id).value||'--';
+  sec('Datos del titular');
+  fil('Apellido',g('apellido'));fil('Nombre/s',g('nombre'));fil('Fecha de nac.',g('nacimiento'));fil('Lugar de nac.',g('lugar'));fil('DNI',g('dni'));fil('CUIT',g('cuit'));fil('Estado civil',g('civil'));fil('Telefono',g('tel'));fil('E-mail',g('email'));y+=2;
+  sec('Domicilio');fil('Domicilio',g('domicilio'));fil('Localidad',g('localidad')+(document.getElementById('cp').value?' - CP: '+document.getElementById('cp').value:''));y+=2;
+  sec('Datos laborales');fil('Empresa',g('empresa'));fil('Legajo',g('legajo'));fil('Lugar de trabajo',g('trabajo'));y+=2;
+  const fams=getFamiliares();
+  if(fams.length){sec('Grupo familiar');fams.forEach(f=>{if(y>265){doc.addPage();y=18;}doc.setTextColor(44,62,80);doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.text(f.apellido+', '+f.nombre,14,y);doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(100,110,120);doc.text('Parentesco: '+(f.parentesco||'--')+'   CUIL: '+(f.cuil||'--')+'   Nac.: '+(f.fnac||'--'),14,y+5);y+=11;doc.setDrawColor(225,230,235);doc.line(14,y-1,W-14,y-1);});y+=2;}
+  if(y>248){doc.addPage();y=18;}
+  doc.setFillColor(240,249,244);doc.rect(10,y,W-20,26,'F');doc.setDrawColor(39,174,96);doc.rect(10,y,W-20,26,'S');doc.setFillColor(39,174,96);doc.rect(10,y,3,26,'F');
+  doc.setTextColor(39,174,96);doc.setFontSize(9);doc.setFont('helvetica','bold');doc.text('AUTORIZACION ACEPTADA',16,y+8);
+  doc.setTextColor(44,62,80);doc.setFont('helvetica','normal');doc.setFontSize(8);
+  const al=doc.splitTextToSize('El/la afiliado/a autoriza el descuento del 1,5% de sus haberes en concepto de cuota societaria de AMASUPeH, conforme a la normativa vigente.',W-28);
+  doc.text(al,14,y+16);y+=32;
+  if(y>258){doc.addPage();y=18;}y+=4;
+  doc.setDrawColor(44,62,80);doc.setLineWidth(0.3);doc.line(14,y,85,y);doc.line(W-85,y,W-14,y);
+  doc.setFontSize(7.5);doc.setTextColor(100,110,120);doc.setFont('helvetica','normal');
+  doc.text('Firma y aclaracion del afiliado/a',14,y+5);doc.text('Firma y aclaracion AMASUPeH',W-85,y+5);
+  doc.setFillColor(26,111,168);doc.rect(0,285,W,12,'F');doc.setFillColor(232,185,35);doc.rect(0,285,W,1.5,'F');
+  doc.setTextColor(255,255,255);doc.setFontSize(7);
+  doc.text('AMASUPeH - Asociacion Mutual de Afiliados SUPeH Plaza Huincul | Plaza Huincul, Neuquen',W/2,292,{align:'center'});
+  const ap=document.getElementById('apellido').value.replace(/[^a-zA-Z0-9]/g,'_')||'afiliado';
+  doc.save('Afiliacion_AMASUPeH_'+ap+'.pdf');
+}
+
+function resetForm(){
+  document.querySelectorAll('input,select').forEach(el=>{if(el.type!=='button'&&el.type!=='checkbox')el.value='';});
+  document.getElementById('familiar-list').innerHTML='';
+  famRowCount=0;authChecked=false;setStep(0);
+}
+</script>
+</body>
+</html>
