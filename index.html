@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -91,7 +92,7 @@ html,body{min-height:100%;background:#f0f4f8;font-family:-apple-system,BlinkMacS
         <polygon points="110,140 150,55 210,185" fill="rgba(91,188,204,0.9)"/>
       </svg>
       <div class="logo-texts">
-        <div class="org">Asociacion MASUPeH</div>
+        <div class="org">AMASUPeH</div>
         <div class="sub">Mutual Afiliados SUPeH Plaza Huincul</div>
       </div>
     </div>
@@ -135,7 +136,7 @@ html,body{min-height:100%;background:#f0f4f8;font-family:-apple-system,BlinkMacS
       </div>
       <div class="row2">
         <div class="field" id="f-dni"><label>DNI *</label><input type="text" id="dni" inputmode="numeric" placeholder="00.000.000"><span class="err">Requerido</span></div>
-        <div class="field" id="f-cuit"><label>CUIT *</label><input type="text" id="cuit" inputmode="numeric" placeholder="20-00000000-0"><span class="err">Requerido</span></div>
+        <div class="field" id="f-cuit"><label>CUIL *</label><input type="text" id="cuit" inputmode="numeric" placeholder="20-00000000-0"><span class="err">Requerido</span></div>
       </div>
       <div class="row2">
         <div class="field" id="f-civil"><label>Estado civil *</label>
@@ -334,7 +335,7 @@ function goStep2(){
 function buildConfirm(){
   var g=function(id){return document.getElementById(id).value||'--';};
   var cp=g('cp');
-  var rows=[['Apellido',g('apellido')],['Nombre/s',g('nombre')],['Fecha de nac.',g('nacimiento')],['Lugar de nac.',g('lugar')],['DNI',g('dni')],['CUIT',g('cuit')],['Estado civil',g('civil')],['Telefono',g('tel')],['E-mail',g('email')],['Domicilio',g('domicilio')],['Localidad',g('localidad')+(cp&&cp!='--'?' (CP: '+cp+')':'')],['Empresa',g('empresa')],['Legajo',g('legajo')],['Lugar de trabajo',g('trabajo')],['Fecha de afiliacion',dateStr]];
+  var rows=[['Apellido',g('apellido')],['Nombre/s',g('nombre')],['Fecha de nac.',g('nacimiento')],['Lugar de nac.',g('lugar')],['DNI',g('dni')],['CUIL',g('cuit')],['Estado civil',g('civil')],['Telefono',g('tel')],['E-mail',g('email')],['Domicilio',g('domicilio')],['Localidad',g('localidad')+(cp&&cp!='--'?' (CP: '+cp+')':'')],['Empresa',g('empresa')],['Legajo',g('legajo')],['Lugar de trabajo',g('trabajo')],['Fecha de afiliacion',dateStr]];
   document.getElementById('cp-personal').innerHTML=rows.map(function(r){return '<div class="crow"><span class="clabel">'+r[0]+'</span><span class="cval">'+r[1]+'</span></div>';}).join('');
   var fams=getFamiliares();
   var fw=document.getElementById('cp-fam-wrap');
@@ -365,12 +366,25 @@ function enviarPDF(nro){
   var jsPDF=window.jspdf.jsPDF;
   var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
   var W=doc.internal.pageSize.getWidth();var y=0;
-  doc.setFillColor(26,111,168);doc.rect(0,0,W,30,'F');
-  doc.setFillColor(232,185,35);doc.rect(0,30,W,2.5,'F');
+  doc.setFillColor(26,111,168);doc.rect(0,0,W,32,'F');
+  doc.setFillColor(232,185,35);doc.rect(0,32,W,2.5,'F');
+  // Logo M - triangulo izquierdo azul oscuro
+  doc.setFillColor(26,90,140);
+  doc.triangle(14,28, 22,10, 30,28,'F');
+  // Logo M - triangulo derecho celeste
+  doc.setFillColor(91,188,204);
+  doc.triangle(26,28, 34,10, 42,28,'F');
+  // Logo M - triangulo centro azul medio
+  doc.setFillColor(52,130,180);
+  doc.triangle(22,10, 34,10, 28,20,'F');
+  // Textos header
   doc.setTextColor(255,255,255);
-  doc.setFontSize(15);doc.setFont('helvetica','bold');doc.text('ASOCIACION MASUPeH',W/2,12,{align:'center'});
-  doc.setFontSize(8);doc.setFont('helvetica','normal');doc.text('MUTUAL AFILIADOS SUPEH PLAZA HUINCUL',W/2,19,{align:'center'});
-  doc.setFontSize(9);doc.setFont('helvetica','bold');doc.text('SOLICITUD DE AFILIACION',W/2,26,{align:'center'});
+  doc.setFontSize(14);doc.setFont('helvetica','bold');
+  doc.text('AMASUPeH',52,14);
+  doc.setFontSize(7.5);doc.setFont('helvetica','normal');
+  doc.text('MUTUAL AFILIADOS SUPEH PLAZA HUINCUL',52,20);
+  doc.setFontSize(8.5);doc.setFont('helvetica','bold');
+  doc.text('SOLICITUD DE AFILIACION',52,27);
   y=42;
   doc.setTextColor(44,62,80);doc.setFontSize(8.5);doc.setFont('helvetica','bold');
   doc.text('N de solicitud: '+nro,14,y);doc.text('Fecha: '+dateStr,W-14,y,{align:'right'});y+=10;
@@ -378,7 +392,7 @@ function enviarPDF(nro){
   function fil(l,v){if(y>272){doc.addPage();y=18;}doc.setTextColor(120,130,140);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.text(l,14,y);doc.setTextColor(44,62,80);doc.setFont('helvetica','bold');doc.setFontSize(8.5);var lines=doc.splitTextToSize(String(v||'--'),W-90);doc.text(lines,78,y);y+=Math.max(6,lines.length*5);doc.setDrawColor(225,230,235);doc.line(14,y-1,W-14,y-1);}
   var g=function(id){return document.getElementById(id).value||'--';};
   sec('Datos del titular');
-  fil('Apellido',g('apellido'));fil('Nombre/s',g('nombre'));fil('Fecha de nac.',g('nacimiento'));fil('Lugar de nac.',g('lugar'));fil('DNI',g('dni'));fil('CUIT',g('cuit'));fil('Estado civil',g('civil'));fil('Telefono',g('tel'));fil('E-mail',g('email'));y+=2;
+  fil('Apellido',g('apellido'));fil('Nombre/s',g('nombre'));fil('Fecha de nac.',g('nacimiento'));fil('Lugar de nac.',g('lugar'));fil('DNI',g('dni'));  fil('CUIL',g('cuit'));fil('Estado civil',g('civil'));fil('Telefono',g('tel'));fil('E-mail',g('email'));y+=2;
   sec('Domicilio');fil('Domicilio',g('domicilio'));fil('Localidad',g('localidad')+(document.getElementById('cp').value?' - CP: '+document.getElementById('cp').value:''));y+=2;
   sec('Datos laborales');fil('Empresa',g('empresa'));fil('Legajo',g('legajo'));fil('Lugar de trabajo',g('trabajo'));y+=2;
   var fams=getFamiliares();
@@ -395,7 +409,7 @@ function enviarPDF(nro){
   doc.text('Firma y aclaracion del afiliado/a',14,y+5);doc.text('Firma y aclaracion AMASUPeH',W-85,y+5);
   doc.setFillColor(26,111,168);doc.rect(0,285,W,12,'F');doc.setFillColor(232,185,35);doc.rect(0,285,W,1.5,'F');
   doc.setTextColor(255,255,255);doc.setFontSize(7);
-  doc.text('AMASUPeH - Asociacion Mutual de Afiliados SUPeH Plaza Huincul | Plaza Huincul, Neuquen',W/2,292,{align:'center'});
+  doc.text('AMASUPeH - Mutual Afiliados SUPeH Plaza Huincul | Plaza Huincul, Neuquen',W/2,292,{align:'center'});
 
   var pdfBase64=doc.output('datauristring').split(',')[1];
   var apellido=document.getElementById('apellido').value||'afiliado';
@@ -443,7 +457,3 @@ window.onload=function(){
   addTap('btn-back2',function(){setStep(1);});
   addTap('btn-step3',goStep3);
   addTap('btn-reset',resetForm);
-};
-</script>
-</body>
-</html>
